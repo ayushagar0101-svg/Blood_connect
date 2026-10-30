@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BloodConnect - Life Saving Donor Platform</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+    <!-- Header / Navbar -->
+    <header class="navbar">
+        <div class="container nav-container">
+            <a href="index.html" class="brand">
+                <span class="brand-icon">🩸</span>
+                Blood<span>Connect</span>
+            </a>
+            <div id="connectionBadge" class="badge-status badge-pending">
+                <span class="pulse-dot"></span>
+                <span id="badgeText">Connecting to API...</span>
+            </div>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="container">
+            <h1>Emergency Blood Donor Finder</h1>
+            <p>Connecting eligible voluntary donors with families and hospitals during critical moments.</p>
+        </div>
+    </section>
+
+    <!-- Main Content -->
+    <main class="container">
+        <div class="content-grid">
+            
+            <!-- Phase 2: MySQL Database Status Card -->
+            <div class="card" style="border-left: 4px solid var(--primary);">
+                <div class="card-header">
+                    <h2 class="card-title">
+                        <span>🗄️</span> Phase 2: MySQL Database & Tables Health
+                    </h2>
+                    <span id="dbBadge" class="badge-status badge-pending">Checking DB...</span>
+                </div>
+
+                <p style="color: var(--text-secondary); margin-bottom: 20px;">
+                    Verifying connection to <code>bloodconnect_db</code> and confirming the 6 core relational tables required for the platform.
+                </p>
+
+                <!-- DB Info Grid -->
+                <div class="info-row">
+                    <span class="info-label">Database Name</span>
+                    <span class="info-value" id="dbNameDisplay">bloodconnect_db</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">MySQL Host</span>
+                    <span class="info-value" id="dbHostDisplay">localhost:3306</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">Core Tables Detected</span>
+                    <span class="info-value" id="dbTablesCountDisplay">Checking...</span>
+                </div>
+
+                <!-- Table Badges Display -->
+                <div style="margin-top: 18px;">
+                    <label style="font-size: 13px; font-weight: 600; color: var(--text-secondary); display: block; margin-bottom: 8px;">
+                        Schema Tables Status:
+                    </label>
+                    <div id="tableListContainer" style="display: flex; flex-wrap: wrap; gap: 8px;">
+                        <span class="badge-status badge-pending">users</span>
+                        <span class="badge-status badge-pending">donor_profiles</span>
+                        <span class="badge-status badge-pending">blood_requests</span>
+                        <span class="badge-status badge-pending">request_responses</span>
+                        <span class="badge-status badge-pending">donation_history</span>
+                        <span class="badge-status badge-pending">camps</span>
+                    </div>
+                </div>
+
+                <!-- Action Button & Error Box -->
+                <div style="margin-top: 24px; display: flex; gap: 12px; align-items: center; flex-wrap: wrap;">
+                    <button id="btnCheckDb" class="btn btn-primary">
+                        <span>🔄</span> Re-check Database Status
+                    </button>
+                    <span id="dbStatusMessage" style="font-size: 13px; color: var(--text-secondary);"></span>
+                </div>
+
+                <!-- Error Guide (Hidden unless error occurs) -->
+                <div id="dbErrorGuide" style="display: none; margin-top: 18px; padding: 14px; background: #FEF2F2; border-left: 4px solid var(--danger); border-radius: 6px; font-size: 13px; color: #991B1B;">
+                    <strong>⚠️ Database Connection Issue:</strong>
+                    <div id="dbErrorMessage" style="margin: 6px 0; font-family: monospace;"></div>
+                    <div style="margin-top: 8px; color: #7F1D1D;">
+                        <strong>Quick Fix:</strong><br>
+                        1. Make sure MySQL service is running.<br>
+                        2. If MySQL has a password, update <code>backend/.env</code>: <code>DB_PASSWORD=your_password</code><br>
+                        3. In terminal, run: <code>cd backend &amp;&amp; npm run init-db</code>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Phase 1: Environment & Server Health Check Card -->
+            <div class="card">
+                <div class="card-header">
+                    <h2 class="card-title">
+                        <span>🧪</span> Phase 1: Server Health Check
+                    </h2>
+                    <span style="font-size: 13px; color: var(--text-secondary);">Verified ✓</span>
+                </div>
+
+                <div class="info-row">
+                    <span class="info-label">Backend API URL</span>
+                    <span class="info-value" id="apiUrlDisplay">http://localhost:5000/api</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">Endpoint</span>
+                    <span class="info-value">GET /health</span>
+                </div>
+
+                <div style="margin-top: 18px; display: flex; gap: 12px;">
+                    <button id="btnTestServer" class="btn btn-secondary">
+                        <span>⚡</span> Ping API Server
+                    </button>
+                </div>
+            </div>
+
+            <!-- 15-Phase Development Roadmap -->
+            <div class="card">
+                <div class="card-header">
+                    <h2 class="card-title">
+                        <span>📋</span> Development Roadmap Progress
+                    </h2>
+                </div>
+
+                <ul class="checklist">
+                    <li class="checklist-item">
+                        <span class="check-icon check-done">✓</span>
+                        <span><strong>Phase 1:</strong> Architecture, Folder Structure & Environment Setup (Verified)</span>
+                    </li>
+                    <li class="checklist-item">
+                        <span class="check-icon check-pending" id="phase2Check">2</span>
+                        <span><strong>Phase 2:</strong> MySQL Database Design, Tables & Migration Scripts (Current)</span>
+                    </li>
+                    <li class="checklist-item">
+                        <span class="check-icon check-pending">3</span>
+                        <span><strong>Phase 3:</strong> Authentication & Role-Based Access Control (Donor, Requester, Hospital, Admin)</span>
+                    </li>
+                    <li class="checklist-item">
+                        <span class="check-icon check-pending">4</span>
+                        <span><strong>Phase 4:</strong> Donor Profile, Component Selection & Medical Questionnaire</span>
+                    </li>
+                    <li class="checklist-item">
+                        <span class="check-icon check-pending">5-15</span>
+                        <span>Smart Matching, Geolocation, Requests, Cooldown, SOS Broadcast, PDF Certificates, PWA & Admin</span>
+                    </li>
+                </ul>
+            </div>
+
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            BloodConnect &copy; 2026 | Saving Lives Together
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="js/config.js"></script>
+    <script src="js/api.js"></script>
+    <script>
+        const btnTestServer = document.getElementById('btnTestServer');
+        const btnCheckDb = document.getElementById('btnCheckDb');
+        const connectionBadge = document.getElementById('connectionBadge');
+        const badgeText = document.getElementById('badgeText');
+        const dbBadge = document.getElementById('dbBadge');
+        const dbNameDisplay = document.getElementById('dbNameDisplay');
+        const dbHostDisplay = document.getElementById('dbHostDisplay');
+        const dbTablesCountDisplay = document.getElementById('dbTablesCountDisplay');
+        const tableListContainer = document.getElementById('tableListContainer');
+        const dbStatusMessage = document.getElementById('dbStatusMessage');
+        const dbErrorGuide = document.getElementById('dbErrorGuide');
+        const dbErrorMessage = document.getElementById('dbErrorMessage');
+        const phase2Check = document.getElementById('phase2Check');
+
+        // Check Phase 1 API Health
+        async function checkServerHealth() {
+            const result = await api.get('/health');
+            if (result.ok) {
+                connectionBadge.className = "badge-status badge-success";
+                badgeText.textContent = "Backend Online";
+            } else {
+                connectionBadge.className = "badge-status badge-error";
+                badgeText.textContent = "Backend Offline";
+            }
+        }
+
+        // Check Phase 2 Database Status
+        async function checkDatabaseStatus() {
+            dbBadge.className = "badge-status badge-pending";
+            dbBadge.textContent = "Checking...";
+            dbStatusMessage.textContent = "Pinging MySQL database...";
+            dbErrorGuide.style.display = "none";
+
+            const result = await api.get('/db-status');
+
+            if (result.ok && result.data.data.connected) {
+                const data = result.data.data;
+                dbBadge.className = "badge-status badge-success";
+                dbBadge.textContent = "Database Connected";
+                dbNameDisplay.textContent = data.database;
+                dbHostDisplay.textContent = data.host;
+                dbTablesCountDisplay.textContent = `${data.totalTables} / 6 Tables Ready`;
+                dbStatusMessage.textContent = data.message;
+                
+                // Render table pills
+                const expectedTables = ['users', 'donor_profiles', 'blood_requests', 'request_responses', 'donation_history', 'camps'];
+                tableListContainer.innerHTML = expectedTables.map(tbl => {
+                    const isPresent = data.tables.includes(tbl);
+                    return `<span class="badge-status ${isPresent ? 'badge-success' : 'badge-pending'}">
+                        ${isPresent ? '✓' : '○'} ${tbl}
+                    </span>`;
+                }).join('');
+
+                if (data.totalTables >= 6) {
+                    phase2Check.className = "check-icon check-done";
+                    phase2Check.textContent = "✓";
+                }
+            } else {
+                const errData = (result.data && result.data.data) ? result.data.data : {};
+                dbBadge.className = "badge-status badge-error";
+                dbBadge.textContent = "DB Disconnected";
+                dbTablesCountDisplay.textContent = "0 Tables";
+                dbStatusMessage.textContent = "Failed to connect to MySQL.";
+                dbErrorGuide.style.display = "block";
+                dbErrorMessage.textContent = errData.error || result.error || 'Connection refused or credentials incorrect.';
+            }
+        }
+
+        btnTestServer.addEventListener('click', checkServerHealth);
+        btnCheckDb.addEventListener('click', checkDatabaseStatus);
+
+        // Run checks on page load
+        window.addEventListener('DOMContentLoaded', async () => {
+            await checkServerHealth();
+            await checkDatabaseStatus();
+        });
+    </script>
+</body>
+</html>
