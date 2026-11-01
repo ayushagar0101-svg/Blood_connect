@@ -4,6 +4,9 @@ const dotenv = require('dotenv');
 const cookieParser = require('cookie-parser');
 const { testConnection, getDatabaseStatus } = require('./config/db');
 
+// Route Imports
+const authRoutes = require('./routes/authRoutes');
+
 // Load environment variables
 dotenv.config();
 
@@ -45,6 +48,9 @@ app.get('/api/db-status', async (req, res) => {
     }
 });
 
+// Phase 3 Authentication Routes
+app.use('/api/auth', authRoutes);
+
 // Start Server
 app.listen(PORT, async () => {
     console.log('==================================================');
@@ -52,6 +58,7 @@ app.listen(PORT, async () => {
     console.log(`📡 URL: http://localhost:${PORT}`);
     console.log(`🏥 Health Check: http://localhost:${PORT}/api/health`);
     console.log(`🗄️  DB Status Check: http://localhost:${PORT}/api/db-status`);
+    console.log(`🔐 Auth API: http://localhost:${PORT}/api/auth`);
     console.log('==================================================');
 
     // Test DB connection on startup (non-blocking)

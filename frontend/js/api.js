@@ -1,19 +1,32 @@
 /**
  * BloodConnect API Service Helper
  * Handles all AJAX/Fetch HTTP requests to the backend server
+ * Automatically attaches JWT Bearer token if user is signed in
  */
 const api = {
     /**
+     * Get default headers including Auth token if present
+     */
+    getHeaders() {
+        const headers = {
+            'Content-Type': 'application/json'
+        };
+        const token = localStorage.getItem('bloodconnect_token');
+        if (token) {
+            headers['Authorization'] = `Bearer ${token}`;
+        }
+        return headers;
+    },
+
+    /**
      * Send a GET request
-     * @param {string} endpoint - Path after /api (e.g. '/health')
+     * @param {string} endpoint - Path after /api (e.g. '/health', '/auth/me')
      */
     async get(endpoint) {
         try {
             const response = await fetch(`${CONFIG.API_BASE_URL}${endpoint}`, {
                 method: 'GET',
-                headers: {
-                    'Content-Type': 'application/json'
-                }
+                headers: this.getHeaders()
             });
             const data = await response.json();
             return {
@@ -40,9 +53,7 @@ const api = {
         try {
             const response = await fetch(`${CONFIG.API_BASE_URL}${endpoint}`, {
                 method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
+                headers: this.getHeaders(),
                 body: JSON.stringify(body)
             });
             const data = await response.json();
@@ -61,4 +72,3 @@ const api = {
         }
     }
 };
-

@@ -111,6 +111,32 @@ body {
     color: #991B1B;
 }
 
+.role-pill {
+    display: inline-flex;
+    align-items: center;
+    padding: 3px 10px;
+    border-radius: 9999px;
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.badge-donor {
+    background-color: #FEE2E2;
+    color: #991B1B;
+}
+
+.badge-hospital {
+    background-color: #DBEAFE;
+    color: #1E40AF;
+}
+
+.badge-admin {
+    background-color: #F3E8FF;
+    color: #6B21A8;
+}
+
 .pulse-dot {
     width: 8px;
     height: 8px;
@@ -215,6 +241,10 @@ body {
     background-color: #F3F4F6;
 }
 
+.btn-block {
+    width: 100%;
+}
+
 /* Info Box / Status details */
 .info-row {
     display: flex;
@@ -233,20 +263,6 @@ body {
     font-weight: 600;
     color: var(--secondary);
     font-family: monospace;
-}
-
-.response-box {
-    background: #1E293B;
-    color: #F8FAFC;
-    padding: 16px;
-    border-radius: var(--radius-md);
-    margin-top: 20px;
-    font-family: 'Courier New', Courier, monospace;
-    font-size: 13px;
-    white-space: pre-wrap;
-    word-break: break-all;
-    max-height: 200px;
-    overflow-y: auto;
 }
 
 /* Checklist / Roadmap */
@@ -285,6 +301,131 @@ body {
     color: #6B7280;
 }
 
+/* ==========================================================================
+   Auth Pages Styling (Login & Register)
+   ========================================================================== */
+.auth-wrapper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 40px 20px;
+    min-height: calc(100vh - 160px);
+}
+
+.auth-card {
+    background: #FFFFFF;
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-lg);
+    width: 100%;
+    max-width: 480px;
+    padding: 36px;
+}
+
+.auth-header {
+    text-align: center;
+    margin-bottom: 28px;
+}
+
+.auth-header h2 {
+    font-size: 24px;
+    font-weight: 700;
+    color: var(--secondary);
+    margin-top: 8px;
+}
+
+.auth-header p {
+    color: var(--text-secondary);
+    font-size: 14px;
+    margin-top: 4px;
+}
+
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-group label {
+    display: block;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--secondary);
+    margin-bottom: 6px;
+}
+
+.form-control {
+    width: 100%;
+    padding: 12px 14px;
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-md);
+    font-size: 14px;
+    font-family: inherit;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    background-color: #FAFAFA;
+}
+
+.form-control:focus {
+    outline: none;
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px rgba(200, 16, 46, 0.12);
+    background-color: #FFFFFF;
+}
+
+/* Role Selector Tabs */
+.role-tabs {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+    margin-bottom: 24px;
+}
+
+.role-tab-btn {
+    border: 1px solid var(--border-color);
+    background: #FAFAFA;
+    border-radius: var(--radius-md);
+    padding: 10px 8px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.role-tab-btn.active {
+    border-color: var(--primary);
+    background: var(--primary-light);
+    color: var(--primary);
+    font-weight: 700;
+}
+
+.role-tab-btn .tab-icon {
+    font-size: 18px;
+    display: block;
+    margin-bottom: 4px;
+}
+
+.role-tab-btn .tab-title {
+    font-size: 12px;
+}
+
+/* Alert Boxes */
+.alert {
+    padding: 12px 16px;
+    border-radius: var(--radius-md);
+    font-size: 14px;
+    margin-bottom: 20px;
+    display: none;
+}
+
+.alert-error {
+    background-color: #FEE2E2;
+    color: #991B1B;
+    border: 1px solid #F87171;
+}
+
+.alert-success {
+    background-color: #D1FAE5;
+    color: #065F46;
+    border: 1px solid #34D399;
+}
+
 /* Footer */
 footer {
     margin-top: auto;
@@ -295,4 +436,3 @@ footer {
     font-size: 14px;
     color: var(--text-secondary);
 }
-

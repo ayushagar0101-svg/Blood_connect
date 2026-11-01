@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register - BloodConnect</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+    <!-- Header / Navbar -->
+    <header class="navbar">
+        <div class="container nav-container">
+            <a href="index.html" class="brand">
+                <span class="brand-icon">🩸</span>
+                Blood<span>Connect</span>
+            </a>
+            <div>
+                <a href="login.html" class="btn btn-secondary" style="padding: 8px 16px; font-size: 14px;">
+                    Already have an account? Sign In
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <!-- Registration Section -->
+    <main class="auth-wrapper">
+        <div class="auth-card">
+            
+            <div class="auth-header">
+                <span style="font-size: 32px;">🩸</span>
+                <h2>Join BloodConnect</h2>
+                <p>Register as a voluntary donor, hospital, or emergency requester.</p>
+            </div>
+
+            <!-- Alert Container -->
+            <div id="alertBox" class="alert"></div>
+
+            <form id="registerForm">
+                
+                <!-- Role Selector -->
+                <label style="display: block; font-size: 13px; font-weight: 600; color: var(--secondary); margin-bottom: 8px;">
+                    Select Your Role:
+                </label>
+                <div class="role-tabs">
+                    <div class="role-tab-btn active" data-role="donor">
+                        <span class="tab-icon">🩸</span>
+                        <span class="tab-title">Donor</span>
+                    </div>
+                    <div class="role-tab-btn" data-role="requester">
+                        <span class="tab-icon">🆘</span>
+                        <span class="tab-title">Requester</span>
+                    </div>
+                    <div class="role-tab-btn" data-role="hospital">
+                        <span class="tab-icon">🏥</span>
+                        <span class="tab-title">Hospital</span>
+                    </div>
+                </div>
+                <input type="hidden" id="selectedRole" name="role" value="donor">
+
+                <!-- Full Name -->
+                <div class="form-group">
+                    <label for="name">Full Name</label>
+                    <input type="text" id="name" class="form-control" placeholder="e.g. Rahul Sharma" required>
+                </div>
+
+                <!-- Email Address -->
+                <div class="form-group">
+                    <label for="email">Email Address (Used for Login)</label>
+                    <input type="email" id="email" class="form-control" placeholder="name@example.com" required>
+                </div>
+
+                <!-- Phone Number -->
+                <div class="form-group">
+                    <label for="phone">Phone Number (Emergency Contact)</label>
+                    <input type="tel" id="phone" class="form-control" placeholder="e.g. 9876543210" required>
+                </div>
+
+                <!-- Password -->
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" class="form-control" placeholder="At least 6 characters" required minlength="6">
+                </div>
+
+                <!-- Confirm Password -->
+                <div class="form-group">
+                    <label for="confirmPassword">Confirm Password</label>
+                    <input type="password" id="confirmPassword" class="form-control" placeholder="Re-enter your password" required minlength="6">
+                </div>
+
+                <!-- Submit Button -->
+                <button type="submit" id="btnSubmit" class="btn btn-primary btn-block" style="padding: 13px; margin-top: 10px;">
+                    Create Account
+                </button>
+
+            </form>
+
+            <div style="text-align: center; margin-top: 20px; font-size: 14px; color: var(--text-secondary);">
+                Already have an account? <a href="login.html" style="color: var(--primary); font-weight: 600; text-decoration: none;">Sign In</a>
+            </div>
+
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            BloodConnect &copy; 2026 | Saving Lives Together
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="js/config.js"></script>
+    <script src="js/api.js"></script>
+    <script src="js/register.js"></script>
+</body>
+</html>
+
