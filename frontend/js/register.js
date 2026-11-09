@@ -60,7 +60,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // Disable button during request
         btnSubmit.disabled = true;
-        btnSubmit.innerHTML = 'Creating Account...';
+        btnSubmit.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> Creating Account...';
 
         const result = await api.post('/auth/register', {
             name,
@@ -71,7 +71,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
 
         btnSubmit.disabled = false;
-        btnSubmit.innerHTML = 'Create Account';
+        btnSubmit.innerHTML = '<i class="fa-solid fa-user-plus"></i> Create Account';
 
         if (result.ok && result.data.success) {
             showAlert('Registration successful! Redirecting to Sign In...', 'success');

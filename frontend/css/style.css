@@ -1,12 +1,12 @@
 /* ==========================================================================
-   BloodConnect Design System - Modern & Medical Theme
+   BloodConnect Design System - Modern, Medical & Monochromatic Icon Theme
    ========================================================================== */
 
 :root {
     --primary: #C8102E;           /* Medical Crimson Blood Red */
     --primary-dark: #960B22;      /* Deep Wine Red */
     --primary-light: #FFECEE;     /* Soft Red Tint */
-    --secondary: #1F2937;         /* Charcoal Blue */
+    --secondary: #1F2937;         /* Charcoal Slate */
     --accent: #2563EB;            /* Action Blue */
     --success: #10B981;           /* Medical Green */
     --warning: #F59E0B;           /* Warning Amber */
@@ -42,6 +42,28 @@ body {
     flex-direction: column;
 }
 
+/* ==========================================================================
+   Monochromatic Professional Icon Rules (Font Awesome)
+   ========================================================================== */
+i.fa-solid, i.fa-regular, i.fa-brands {
+    color: currentColor;
+    display: inline-block;
+    vertical-align: middle;
+    line-height: 1;
+}
+
+.icon-mono {
+    color: var(--secondary);
+}
+
+.icon-primary {
+    color: var(--primary);
+}
+
+.icon-muted {
+    color: var(--text-secondary);
+}
+
 /* Container */
 .container {
     max-width: 1100px;
@@ -75,11 +97,15 @@ body {
     color: var(--secondary);
     font-size: 22px;
     font-weight: 700;
+    letter-spacing: -0.3px;
 }
 
 .brand-icon {
-    font-size: 26px;
+    font-size: 20px;
     color: var(--primary);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .brand span {
@@ -114,6 +140,7 @@ body {
 .role-pill {
     display: inline-flex;
     align-items: center;
+    gap: 5px;
     padding: 3px 10px;
     border-radius: 9999px;
     font-size: 11px;
@@ -130,6 +157,11 @@ body {
 .badge-hospital {
     background-color: #DBEAFE;
     color: #1E40AF;
+}
+
+.badge-requester {
+    background-color: #FEF3C7;
+    color: #92400E;
 }
 
 .badge-admin {
@@ -152,19 +184,20 @@ body {
 
 /* Hero Section */
 .hero {
-    padding: 40px 0 20px 0;
+    padding: 36px 0 20px 0;
     text-align: center;
 }
 
 .hero h1 {
-    font-size: 32px;
+    font-size: 30px;
     font-weight: 800;
     color: var(--secondary);
     margin-bottom: 8px;
+    letter-spacing: -0.5px;
 }
 
 .hero p {
-    font-size: 16px;
+    font-size: 15px;
     color: var(--text-secondary);
     max-width: 650px;
     margin: 0 auto;
@@ -175,7 +208,7 @@ body {
     display: grid;
     grid-template-columns: 1fr;
     gap: 24px;
-    margin: 30px 0;
+    margin: 24px 0;
 }
 
 .card {
@@ -183,7 +216,7 @@ body {
     border: 1px solid var(--border-color);
     border-radius: var(--radius-lg);
     box-shadow: var(--shadow-md);
-    padding: 28px;
+    padding: 26px;
     transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
@@ -197,12 +230,17 @@ body {
 }
 
 .card-title {
-    font-size: 20px;
+    font-size: 18px;
     font-weight: 700;
     color: var(--secondary);
     display: flex;
     align-items: center;
     gap: 10px;
+}
+
+.card-title i {
+    color: var(--secondary);
+    font-size: 17px;
 }
 
 /* Buttons */
@@ -211,14 +249,18 @@ body {
     align-items: center;
     justify-content: center;
     gap: 8px;
-    padding: 12px 24px;
-    font-size: 15px;
+    padding: 10px 20px;
+    font-size: 14px;
     font-weight: 600;
     border-radius: var(--radius-md);
     cursor: pointer;
     border: none;
     transition: all 0.2s ease;
     text-decoration: none;
+}
+
+.btn i {
+    font-size: 14px;
 }
 
 .btn-primary {
@@ -228,7 +270,7 @@ body {
 
 .btn-primary:hover {
     background-color: var(--primary-dark);
-    box-shadow: 0 4px 12px rgba(200, 16, 46, 0.3);
+    box-shadow: 0 4px 12px rgba(200, 16, 46, 0.25);
 }
 
 .btn-secondary {
@@ -249,7 +291,7 @@ body {
 .info-row {
     display: flex;
     justify-content: space-between;
-    padding: 12px 0;
+    padding: 11px 0;
     border-bottom: 1px dashed var(--border-color);
     font-size: 14px;
 }
@@ -263,6 +305,20 @@ body {
     font-weight: 600;
     color: var(--secondary);
     font-family: monospace;
+}
+
+.response-box {
+    background: #1E293B;
+    color: #F8FAFC;
+    padding: 16px;
+    border-radius: var(--radius-md);
+    margin-top: 20px;
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 13px;
+    white-space: pre-wrap;
+    word-break: break-all;
+    max-height: 200px;
+    overflow-y: auto;
 }
 
 /* Checklist / Roadmap */
@@ -287,7 +343,7 @@ body {
     width: 22px;
     height: 22px;
     border-radius: 50%;
-    font-size: 12px;
+    font-size: 11px;
     font-weight: bold;
 }
 
@@ -299,6 +355,196 @@ body {
 .check-pending {
     background-color: #E5E7EB;
     color: #6B7280;
+}
+
+/* ==========================================================================
+   Form Grids & Layouts
+   ========================================================================== */
+.form-row {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 16px;
+    margin-bottom: 18px;
+}
+
+@media (min-width: 640px) {
+    .form-col-2 {
+        grid-template-columns: 1fr 1fr;
+    }
+    .form-col-3 {
+        grid-template-columns: 1fr 1fr 1fr;
+    }
+}
+
+.form-group {
+    margin-bottom: 18px;
+}
+
+.form-group label {
+    display: block;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--secondary);
+    margin-bottom: 6px;
+}
+
+.form-control {
+    width: 100%;
+    padding: 11px 13px;
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-md);
+    font-size: 14px;
+    font-family: inherit;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    background-color: #FAFAFA;
+}
+
+.form-control:focus {
+    outline: none;
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px rgba(200, 16, 46, 0.12);
+    background-color: #FFFFFF;
+}
+
+/* ==========================================================================
+   Stats Summary Grid (Donor Portal)
+   ========================================================================== */
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 16px;
+    margin-bottom: 24px;
+}
+
+.stat-card {
+    background: #FFFFFF;
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-md);
+    padding: 18px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    box-shadow: var(--shadow-sm);
+}
+
+.stat-icon {
+    width: 44px;
+    height: 44px;
+    border-radius: 10px;
+    background: #F3F4F6;
+    color: var(--secondary);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    flex-shrink: 0;
+}
+
+.stat-info {
+    flex-grow: 1;
+}
+
+.stat-label {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.stat-value {
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--secondary);
+    margin-top: 2px;
+}
+
+/* ==========================================================================
+   Toggle Switch (Availability)
+   ========================================================================== */
+.switch-container {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.switch {
+    position: relative;
+    display: inline-block;
+    width: 48px;
+    height: 26px;
+}
+
+.switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #D1D5DB;
+    transition: .3s;
+    border-radius: 26px;
+}
+
+.slider:before {
+    position: absolute;
+    content: "";
+    height: 20px;
+    width: 20px;
+    left: 3px;
+    bottom: 3px;
+    background-color: white;
+    transition: .3s;
+    border-radius: 50%;
+}
+
+input:checked + .slider {
+    background-color: var(--success);
+}
+
+input:checked + .slider:before {
+    transform: translateX(22px);
+}
+
+/* ==========================================================================
+   Medical Questionnaire Box
+   ========================================================================== */
+.questionnaire-box {
+    background: #F9FAFB;
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-md);
+    padding: 18px;
+    margin-top: 14px;
+}
+
+.screening-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 10px 0;
+    border-bottom: 1px solid #EEF2F6;
+    font-size: 14px;
+    color: var(--secondary);
+}
+
+.screening-item:last-child {
+    border-bottom: none;
+}
+
+.screening-item input[type="checkbox"] {
+    width: 18px;
+    height: 18px;
+    accent-color: var(--primary);
+    cursor: pointer;
+    margin-top: 2px;
+    flex-shrink: 0;
 }
 
 /* ==========================================================================
@@ -327,47 +573,31 @@ body {
     margin-bottom: 28px;
 }
 
+.auth-icon-circle {
+    width: 52px;
+    height: 52px;
+    background-color: #F3F4F6;
+    border: 1px solid var(--border-color);
+    color: var(--secondary);
+    border-radius: 50%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+    margin-bottom: 12px;
+}
+
 .auth-header h2 {
     font-size: 24px;
     font-weight: 700;
     color: var(--secondary);
-    margin-top: 8px;
+    margin-top: 4px;
 }
 
 .auth-header p {
     color: var(--text-secondary);
     font-size: 14px;
     margin-top: 4px;
-}
-
-.form-group {
-    margin-bottom: 20px;
-}
-
-.form-group label {
-    display: block;
-    font-size: 14px;
-    font-weight: 600;
-    color: var(--secondary);
-    margin-bottom: 6px;
-}
-
-.form-control {
-    width: 100%;
-    padding: 12px 14px;
-    border: 1px solid var(--border-color);
-    border-radius: var(--radius-md);
-    font-size: 14px;
-    font-family: inherit;
-    transition: border-color 0.2s ease, box-shadow 0.2s ease;
-    background-color: #FAFAFA;
-}
-
-.form-control:focus {
-    outline: none;
-    border-color: var(--primary);
-    box-shadow: 0 0 0 3px rgba(200, 16, 46, 0.12);
-    background-color: #FFFFFF;
 }
 
 /* Role Selector Tabs */
@@ -382,27 +612,39 @@ body {
     border: 1px solid var(--border-color);
     background: #FAFAFA;
     border-radius: var(--radius-md);
-    padding: 10px 8px;
+    padding: 12px 8px;
     text-align: center;
     cursor: pointer;
     transition: all 0.2s ease;
+    color: var(--secondary);
+}
+
+.role-tab-btn:hover {
+    border-color: #D1D5DB;
+    background: #F3F4F6;
 }
 
 .role-tab-btn.active {
-    border-color: var(--primary);
-    background: var(--primary-light);
-    color: var(--primary);
+    border-color: var(--secondary);
+    background: #F3F4F6;
+    color: var(--secondary);
     font-weight: 700;
 }
 
 .role-tab-btn .tab-icon {
-    font-size: 18px;
+    font-size: 17px;
     display: block;
-    margin-bottom: 4px;
+    margin-bottom: 6px;
+    color: var(--secondary);
+}
+
+.role-tab-btn.active .tab-icon {
+    color: var(--primary);
 }
 
 .role-tab-btn .tab-title {
-    font-size: 12px;
+    font-size: 13px;
+    font-weight: 600;
 }
 
 /* Alert Boxes */

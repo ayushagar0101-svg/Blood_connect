@@ -6,6 +6,7 @@ const { testConnection, getDatabaseStatus } = require('./config/db');
 
 // Route Imports
 const authRoutes = require('./routes/authRoutes');
+const donorRoutes = require('./routes/donorRoutes');
 
 // Load environment variables
 dotenv.config();
@@ -51,6 +52,9 @@ app.get('/api/db-status', async (req, res) => {
 // Phase 3 Authentication Routes
 app.use('/api/auth', authRoutes);
 
+// Phase 4 Donor Profile & Management Routes
+app.use('/api/donor', donorRoutes);
+
 // Start Server
 app.listen(PORT, async () => {
     console.log('==================================================');
@@ -59,6 +63,7 @@ app.listen(PORT, async () => {
     console.log(`🏥 Health Check: http://localhost:${PORT}/api/health`);
     console.log(`🗄️  DB Status Check: http://localhost:${PORT}/api/db-status`);
     console.log(`🔐 Auth API: http://localhost:${PORT}/api/auth`);
+    console.log(`🩸 Donor API: http://localhost:${PORT}/api/donor`);
     console.log('==================================================');
 
     // Test DB connection on startup (non-blocking)

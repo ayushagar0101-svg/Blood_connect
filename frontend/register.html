@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Register - BloodConnect</title>
+    <!-- Font Awesome for Professional Monochromatic Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
@@ -12,12 +14,12 @@
     <header class="navbar">
         <div class="container nav-container">
             <a href="index.html" class="brand">
-                <span class="brand-icon">🩸</span>
+                <i class="fa-solid fa-droplet brand-icon"></i>
                 Blood<span>Connect</span>
             </a>
             <div>
                 <a href="login.html" class="btn btn-secondary" style="padding: 8px 16px; font-size: 14px;">
-                    Already have an account? Sign In
+                    <i class="fa-solid fa-arrow-right-to-bracket"></i> Sign In
                 </a>
             </div>
         </div>
@@ -28,7 +30,9 @@
         <div class="auth-card">
             
             <div class="auth-header">
-                <span style="font-size: 32px;">🩸</span>
+                <div class="auth-icon-circle">
+                    <i class="fa-solid fa-user-plus"></i>
+                </div>
                 <h2>Join BloodConnect</h2>
                 <p>Register as a voluntary donor, hospital, or emergency requester.</p>
             </div>
@@ -44,15 +48,15 @@
                 </label>
                 <div class="role-tabs">
                     <div class="role-tab-btn active" data-role="donor">
-                        <span class="tab-icon">🩸</span>
+                        <i class="fa-solid fa-hand-holding-droplet tab-icon"></i>
                         <span class="tab-title">Donor</span>
                     </div>
                     <div class="role-tab-btn" data-role="requester">
-                        <span class="tab-icon">🆘</span>
+                        <i class="fa-solid fa-hospital-user tab-icon"></i>
                         <span class="tab-title">Requester</span>
                     </div>
                     <div class="role-tab-btn" data-role="hospital">
-                        <span class="tab-icon">🏥</span>
+                        <i class="fa-solid fa-hospital tab-icon"></i>
                         <span class="tab-title">Hospital</span>
                     </div>
                 </div>
@@ -90,7 +94,7 @@
 
                 <!-- Submit Button -->
                 <button type="submit" id="btnSubmit" class="btn btn-primary btn-block" style="padding: 13px; margin-top: 10px;">
-                    Create Account
+                    <i class="fa-solid fa-user-plus"></i> Create Account
                 </button>
 
             </form>
@@ -115,4 +119,3 @@
     <script src="js/register.js"></script>
 </body>
 </html>
-

@@ -39,7 +39,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         btnSubmit.disabled = true;
-        btnSubmit.innerHTML = 'Signing In...';
+        btnSubmit.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> Signing In...';
 
         const result = await api.post('/auth/login', {
             email,
@@ -47,7 +47,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
 
         btnSubmit.disabled = false;
-        btnSubmit.innerHTML = 'Sign In with Email';
+        btnSubmit.innerHTML = '<i class="fa-solid fa-arrow-right-to-bracket"></i> Sign In with Email';
 
         if (result.ok && result.data.success) {
             showAlert(`Success! Welcome back, ${result.data.user.name}. Redirecting...`, 'success');

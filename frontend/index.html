@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>BloodConnect - Life Saving Donor Platform</title>
+    <!-- Font Awesome for Professional Monochromatic Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
@@ -12,7 +14,7 @@
     <header class="navbar">
         <div class="container nav-container">
             <a href="index.html" class="brand">
-                <span class="brand-icon">🩸</span>
+                <i class="fa-solid fa-droplet brand-icon"></i>
                 Blood<span>Connect</span>
             </a>
             
@@ -20,7 +22,7 @@
                 <!-- Server Badge -->
                 <div id="connectionBadge" class="badge-status badge-pending">
                     <span class="pulse-dot"></span>
-                    <span id="badgeText">API Connecting...</span>
+                    <span id="badgeText">Connecting...</span>
                 </div>
 
                 <!-- Dynamic Auth Section (Injected by js/auth.js) -->
@@ -41,34 +43,70 @@
     <main class="container">
         <div class="content-grid">
 
-            <!-- Phase 3: Authentication & Role-Based Access Card -->
-            <div class="card" style="border-left: 4px solid var(--accent);">
+            <!-- Phase 4: Donor Portal & Profile Management Card -->
+            <div class="card" style="border-left: 4px solid var(--primary);">
                 <div class="card-header">
                     <h2 class="card-title">
-                        <span>🔐</span> Phase 3: Authentication & Role-Based Access (RBAC)
+                        <i class="fa-solid fa-gauge-high"></i> Phase 4: Donor Profile &amp; Medical Questionnaire
+                    </h2>
+                    <span id="phase4StatusBadge" class="badge-status badge-pending">Testing</span>
+                </div>
+
+                <p style="color: var(--text-secondary); margin-bottom: 20px;">
+                    Registered donors can configure their blood group, component capabilities (Whole Blood / Platelets / Plasma), GPS location coordinates, and confirm mandatory pre-donation health screening criteria.
+                </p>
+
+                <div id="donorPortalGuestView" style="padding: 16px; background: #F3F4F6; border-radius: var(--radius-md); margin-bottom: 18px;">
+                    <p style="font-weight: 600; color: var(--secondary); margin-bottom: 4px;">
+                        <i class="fa-solid fa-circle-info"></i> How to test Phase 4:
+                    </p>
+                    <p style="font-size: 13px; color: var(--text-secondary);">
+                        Log in with a <strong>Donor account</strong> to access the full Donor Portal. If you don't have one, register with the "Donor" role.
+                    </p>
+                </div>
+
+                <div id="donorPortalDonorView" style="display: none; margin-bottom: 18px;">
+                    <div class="info-row">
+                        <span class="info-label">Configured Blood Group</span>
+                        <span class="info-value" id="homeDonorBloodGroup">Checking...</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-label">Donation Availability</span>
+                        <span class="info-value" id="homeDonorAvailability">Checking...</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-label">Medical Screening</span>
+                        <span class="info-value" id="homeDonorScreening">Checking...</span>
+                    </div>
+                </div>
+
+                <div style="display: flex; gap: 12px; flex-wrap: wrap;">
+                    <a href="donor/dashboard.html" class="btn btn-primary">
+                        <i class="fa-solid fa-gauge-high"></i> Open Donor Portal
+                    </a>
+                    <a href="login.html" id="btnHomeLoginPrompt" class="btn btn-secondary">
+                        <i class="fa-solid fa-arrow-right-to-bracket"></i> Sign In to Donor Account
+                    </a>
+                </div>
+            </div>
+
+            <!-- Phase 3: Authentication & Role-Based Access Card -->
+            <div class="card">
+                <div class="card-header">
+                    <h2 class="card-title">
+                        <i class="fa-solid fa-shield-halved"></i> Phase 3: Authentication &amp; RBAC
                     </h2>
                     <span id="authStatusBadge" class="badge-status badge-pending">Checking Session...</span>
                 </div>
 
-                <p style="color: var(--text-secondary); margin-bottom: 20px;">
-                    Users can register with their role (Donor, Requester, Hospital) and log in securely via <strong>Email Address & Password</strong>. Protected APIs verify JWT tokens.
-                </p>
-
-                <!-- Dynamic Session Info -->
                 <div id="authGuestView" style="display: none;">
-                    <div style="padding: 16px; background: #F3F4F6; border-radius: var(--radius-md); margin-bottom: 20px;">
-                        <p style="font-weight: 600; color: var(--secondary); margin-bottom: 6px;">You are currently browsing as a Guest.</p>
-                        <p style="font-size: 14px; color: var(--text-secondary);">
-                            Test Phase 3 by registering a new account or logging in with your registered email and password.
-                        </p>
+                    <div class="info-row">
+                        <span class="info-label">Session State</span>
+                        <span class="info-value">Guest (Not Signed In)</span>
                     </div>
-                    <div style="display: flex; gap: 12px; flex-wrap: wrap;">
-                        <a href="register.html" class="btn btn-primary">
-                            <span>📝</span> Register New User
-                        </a>
-                        <a href="login.html" class="btn btn-secondary">
-                            <span>🔑</span> Sign In with Email
-                        </a>
+                    <div class="info-row">
+                        <span class="info-label">Login Method</span>
+                        <span class="info-value">Email Address &amp; Password</span>
                     </div>
                 </div>
 
@@ -82,24 +120,17 @@
                         <span class="info-value" id="userEmailDisplay">-</span>
                     </div>
                     <div class="info-row">
-                        <span class="info-label">Emergency Phone</span>
-                        <span class="info-value" id="userPhoneDisplay">-</span>
-                    </div>
-                    <div class="info-row">
                         <span class="info-label">Assigned Role</span>
                         <span class="info-value" id="userRoleDisplay">-</span>
                     </div>
 
-                    <div style="margin-top: 20px; display: flex; gap: 12px; flex-wrap: wrap; align-items: center;">
-                        <button id="btnTestProtectedApi" class="btn btn-primary" style="font-size: 14px;">
-                            <span>🛡️</span> Test Protected Route (GET /api/auth/me)
-                        </button>
-                        <button id="btnSignOutCard" class="btn btn-secondary" style="font-size: 14px;">
-                            Sign Out
+                    <div style="margin-top: 18px; display: flex; gap: 12px; flex-wrap: wrap; align-items: center;">
+                        <button id="btnTestProtectedApi" class="btn btn-secondary" style="font-size: 13px;">
+                            <i class="fa-solid fa-shield-halved"></i> Verify Bearer Token (GET /api/auth/me)
                         </button>
                     </div>
 
-                    <div id="protectedApiOutput" class="response-box" style="margin-top: 16px; display: none;"></div>
+                    <div id="protectedApiOutput" class="response-box" style="margin-top: 14px; display: none;"></div>
                 </div>
             </div>
             
@@ -107,7 +138,7 @@
             <div class="card">
                 <div class="card-header">
                     <h2 class="card-title">
-                        <span>🗄️</span> Phase 2: MySQL Database & Tables Health
+                        <i class="fa-solid fa-database"></i> Phase 2: MySQL Database &amp; Tables Health
                     </h2>
                     <span id="dbBadge" class="badge-status badge-pending">Checking DB...</span>
                 </div>
@@ -130,9 +161,11 @@
             <div class="card">
                 <div class="card-header">
                     <h2 class="card-title">
-                        <span>🧪</span> Phase 1: Server Health Check
+                        <i class="fa-solid fa-server"></i> Phase 1: Server Health Check
                     </h2>
-                    <span style="font-size: 13px; color: var(--success); font-weight: 600;">Verified ✓</span>
+                    <span style="font-size: 13px; color: var(--success); font-weight: 600;">
+                        <i class="fa-solid fa-check"></i> Verified
+                    </span>
                 </div>
 
                 <div class="info-row">
@@ -149,30 +182,34 @@
             <div class="card">
                 <div class="card-header">
                     <h2 class="card-title">
-                        <span>📋</span> Development Roadmap Progress
+                        <i class="fa-solid fa-list-check"></i> Development Roadmap Progress
                     </h2>
                 </div>
 
                 <ul class="checklist">
                     <li class="checklist-item">
-                        <span class="check-icon check-done">✓</span>
-                        <span><strong>Phase 1:</strong> Architecture, Folder Structure & Environment Setup (Verified)</span>
+                        <span class="check-icon check-done"><i class="fa-solid fa-check"></i></span>
+                        <span><strong>Phase 1:</strong> Architecture, Folder Structure &amp; Environment Setup (Verified)</span>
                     </li>
                     <li class="checklist-item">
-                        <span class="check-icon check-done">✓</span>
-                        <span><strong>Phase 2:</strong> MySQL Database Design, Tables & Migration Scripts (Verified)</span>
+                        <span class="check-icon check-done"><i class="fa-solid fa-check"></i></span>
+                        <span><strong>Phase 2:</strong> MySQL Database Design, Tables &amp; Migration Scripts (Verified)</span>
                     </li>
                     <li class="checklist-item">
-                        <span class="check-icon check-pending" id="phase3Check">3</span>
-                        <span><strong>Phase 3:</strong> Authentication & Role-Based Access Control (Testing)</span>
+                        <span class="check-icon check-done"><i class="fa-solid fa-check"></i></span>
+                        <span><strong>Phase 3:</strong> Authentication &amp; Role-Based Access Control (Verified)</span>
                     </li>
                     <li class="checklist-item">
-                        <span class="check-icon check-pending">4</span>
-                        <span><strong>Phase 4:</strong> Donor Profile, Component Selection & Medical Questionnaire</span>
+                        <span class="check-icon check-pending" id="phase4Check">4</span>
+                        <span><strong>Phase 4:</strong> Donor Profile, Component Selection &amp; Medical Questionnaire (Current)</span>
                     </li>
                     <li class="checklist-item">
-                        <span class="check-icon check-pending">5-15</span>
-                        <span>Smart Matching, Geolocation, Requests, Cooldown, SOS Broadcast, PDF Certificates, PWA & Admin</span>
+                        <span class="check-icon check-pending">5</span>
+                        <span><strong>Phase 5:</strong> Medical Blood Compatibility Matrix &amp; Smart Matching Engine</span>
+                    </li>
+                    <li class="checklist-item">
+                        <span class="check-icon check-pending">6-15</span>
+                        <span>Geolocation, Requests, Cooldown, SOS Broadcast, PDF Certificates, PWA &amp; Admin</span>
                     </li>
                 </ul>
             </div>
@@ -204,12 +241,18 @@
         const authUserView = document.getElementById('authUserView');
         const userNameDisplay = document.getElementById('userNameDisplay');
         const userEmailDisplay = document.getElementById('userEmailDisplay');
-        const userPhoneDisplay = document.getElementById('userPhoneDisplay');
         const userRoleDisplay = document.getElementById('userRoleDisplay');
         const btnTestProtectedApi = document.getElementById('btnTestProtectedApi');
-        const btnSignOutCard = document.getElementById('btnSignOutCard');
         const protectedApiOutput = document.getElementById('protectedApiOutput');
-        const phase3Check = document.getElementById('phase3Check');
+
+        const donorPortalGuestView = document.getElementById('donorPortalGuestView');
+        const donorPortalDonorView = document.getElementById('donorPortalDonorView');
+        const homeDonorBloodGroup = document.getElementById('homeDonorBloodGroup');
+        const homeDonorAvailability = document.getElementById('homeDonorAvailability');
+        const homeDonorScreening = document.getElementById('homeDonorScreening');
+        const btnHomeLoginPrompt = document.getElementById('btnHomeLoginPrompt');
+        const phase4StatusBadge = document.getElementById('phase4StatusBadge');
+        const phase4Check = document.getElementById('phase4Check');
 
         // Check Phase 1 API Health
         async function checkServerHealth() {
@@ -237,7 +280,7 @@
                 tableListContainer.innerHTML = expectedTables.map(tbl => {
                     const isPresent = data.tables.includes(tbl);
                     return `<span class="badge-status ${isPresent ? 'badge-success' : 'badge-pending'}" style="font-size: 11px; padding: 3px 8px;">
-                        ${isPresent ? '✓' : '○'} ${tbl}
+                        <i class="fa-solid ${isPresent ? 'fa-check' : 'fa-minus'}"></i> ${tbl}
                     </span>`;
                 }).join('');
             } else {
@@ -246,8 +289,8 @@
             }
         }
 
-        // Check Phase 3 Auth Session
-        function checkAuthSession() {
+        // Check Phase 3 & 4 Auth Session
+        async function checkAuthSession() {
             const user = auth.getUser();
             const isAuth = auth.isAuthenticated();
 
@@ -259,16 +302,43 @@
 
                 userNameDisplay.textContent = user.name;
                 userEmailDisplay.textContent = user.email;
-                userPhoneDisplay.textContent = user.phone;
                 userRoleDisplay.textContent = user.role.toUpperCase();
 
-                phase3Check.className = "check-icon check-done";
-                phase3Check.textContent = "✓";
+                if (user.role === 'donor') {
+                    donorPortalGuestView.style.display = "none";
+                    donorPortalDonorView.style.display = "block";
+                    btnHomeLoginPrompt.style.display = "none";
+
+                    // Fetch donor profile summary
+                    const donorRes = await api.get('/donor/profile');
+                    if (donorRes.ok && donorRes.data.profile) {
+                        const p = donorRes.data.profile;
+                        homeDonorBloodGroup.textContent = p.blood_group;
+                        homeDonorAvailability.textContent = p.availability_status.toUpperCase();
+                        homeDonorScreening.textContent = "Passed (Eligible)";
+                        phase4StatusBadge.className = "badge-status badge-success";
+                        phase4StatusBadge.innerHTML = '<i class="fa-solid fa-check"></i> Profile Active';
+                        phase4Check.className = "check-icon check-done";
+                        phase4Check.innerHTML = '<i class="fa-solid fa-check"></i>';
+                    } else {
+                        homeDonorBloodGroup.textContent = "Not Set";
+                        homeDonorAvailability.textContent = "Pending Setup";
+                        homeDonorScreening.textContent = "Questionnaire Required";
+                        phase4StatusBadge.className = "badge-status badge-pending";
+                        phase4StatusBadge.textContent = "Setup Pending";
+                    }
+                } else {
+                    donorPortalGuestView.innerHTML = `<p style="font-size: 13px; color: var(--text-secondary);">You are logged in as <strong>${user.role.toUpperCase()}</strong>. The Donor Portal is restricted to voluntary donors.</p>`;
+                    btnHomeLoginPrompt.style.display = "none";
+                }
             } else {
                 authStatusBadge.className = "badge-status badge-pending";
                 authStatusBadge.textContent = "Guest Mode";
                 authGuestView.style.display = "block";
                 authUserView.style.display = "none";
+                donorPortalGuestView.style.display = "block";
+                donorPortalDonorView.style.display = "none";
+                btnHomeLoginPrompt.style.display = "inline-flex";
             }
         }
 
@@ -279,21 +349,17 @@
 
             const result = await api.get('/auth/me');
             if (result.ok) {
-                protectedApiOutput.textContent = `✅ Token Validated by Backend:\n` + JSON.stringify(result.data, null, 2);
+                protectedApiOutput.textContent = `[Token Validated Successfully]\n` + JSON.stringify(result.data, null, 2);
             } else {
-                protectedApiOutput.textContent = `❌ Failed:\n` + JSON.stringify(result, null, 2);
+                protectedApiOutput.textContent = `[Request Failed]\n` + JSON.stringify(result, null, 2);
             }
-        });
-
-        btnSignOutCard?.addEventListener('click', () => {
-            auth.logout();
         });
 
         // Run checks on DOM load
         window.addEventListener('DOMContentLoaded', async () => {
             await checkServerHealth();
             await checkDatabaseStatus();
-            checkAuthSession();
+            await checkAuthSession();
         });
     </script>
 </body>
