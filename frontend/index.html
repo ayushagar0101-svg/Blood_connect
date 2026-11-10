@@ -6,6 +6,8 @@
     <title>BloodConnect - Life Saving Donor Platform</title>
     <!-- Font Awesome for Professional Monochromatic Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <!-- Leaflet.js Interactive Map CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
     <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
@@ -35,12 +37,133 @@
     <section class="hero">
         <div class="container">
             <h1>Emergency Blood Donor Finder</h1>
-            <p>Connecting eligible voluntary donors with families and hospitals during critical moments.</p>
+            <p>Connecting eligible voluntary donors with families and hospitals using clinically verified matching rules and real-time proximity mapping.</p>
         </div>
     </section>
 
     <!-- Main Content -->
     <main class="container">
+
+        <!-- Phase 5 & 6: Smart Compatibility Search Bar & Haversine Geolocation Card -->
+        <div class="search-hero-card">
+            <div style="margin-bottom: 20px; display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 10px;">
+                <div>
+                    <h2 style="font-size: 20px; font-weight: 700; color: var(--secondary); display: flex; align-items: center; gap: 10px;">
+                        <i class="fa-solid fa-location-crosshairs"></i> Proximity &amp; Compatibility Donor Search
+                    </h2>
+                    <p style="font-size: 14px; color: var(--text-secondary); margin-top: 4px;">
+                        Search clinically compatible donors by distance radius using the Haversine formula and interactive OpenStreetMap.
+                    </p>
+                </div>
+                <button type="button" id="btnUseCurrentGPS" class="btn btn-secondary" style="padding: 7px 14px; font-size: 13px;">
+                    <i class="fa-solid fa-crosshairs"></i> Use My Current GPS
+                </button>
+            </div>
+
+            <!-- Hidden GPS Coordinate Inputs -->
+            <input type="hidden" id="searchLat">
+            <input type="hidden" id="searchLng">
+
+            <div id="gpsStatusNotice" style="display: none; font-size: 12px; color: var(--success); font-weight: 600; margin-bottom: 14px;"></div>
+
+            <form id="smartSearchForm">
+                <div class="form-row form-col-4" style="align-items: flex-end; margin-bottom: 0;">
+                    <!-- Blood Group -->
+                    <div class="form-group" style="margin-bottom: 0;">
+                        <label for="searchBloodGroup">Patient Blood Group *</label>
+                        <select id="searchBloodGroup" class="form-control" required>
+                            <option value="">-- Select Blood Group --</option>
+                            <option value="A+">A Positive (A+)</option>
+                            <option value="A-">A Negative (A-)</option>
+                            <option value="B+">B Positive (B+)</option>
+                            <option value="B-">B Negative (B-)</option>
+                            <option value="AB+">AB Positive (AB+) - Universal Recipient</option>
+                            <option value="AB-">AB Negative (AB-)</option>
+                            <option value="O+">O Positive (O+)</option>
+                            <option value="O-">O Negative (O-) - Universal Donor</option>
+                            <option value="Bombay">Bombay Blood Group (hh) - Rare</option>
+                        </select>
+                    </div>
+
+                    <!-- Component -->
+                    <div class="form-group" style="margin-bottom: 0;">
+                        <label for="searchComponent">Component Needed</label>
+                        <select id="searchComponent" class="form-control">
+                            <option value="whole_blood">Whole Blood</option>
+                            <option value="platelets">Platelets / SDP</option>
+                            <option value="plasma">Plasma</option>
+                            <option value="all">Any Component</option>
+                        </select>
+                    </div>
+
+                    <!-- Radius Filter -->
+                    <div class="form-group" style="margin-bottom: 0;">
+                        <label for="searchRadius">Distance Radius</label>
+                        <select id="searchRadius" class="form-control">
+                            <option value="10">Within 10 km</option>
+                            <option value="25" selected>Within 25 km</option>
+                            <option value="50">Within 50 km</option>
+                            <option value="100">Within 100 km</option>
+                            <option value="">Any Distance (City Only)</option>
+                        </select>
+                    </div>
+
+                    <!-- City Filter -->
+                    <div class="form-group" style="margin-bottom: 0;">
+                        <label for="searchCity">City / District (Optional)</label>
+                        <input type="text" id="searchCity" class="form-control" placeholder="e.g. New Delhi">
+                    </div>
+                </div>
+
+                <!-- Submit Button Row -->
+                <div style="margin-top: 16px; display: flex; justify-content: flex-end;">
+                    <button type="submit" id="btnSearchDonors" class="btn btn-primary" style="padding: 11px 26px;">
+                        <i class="fa-solid fa-magnifying-glass"></i> Find Nearest Compatible Donors
+                    </button>
+                </div>
+
+                <!-- Interactive Compatibility Visualizer Strip -->
+                <div id="compatibilityVisualizer" style="display: none;">
+                    <div class="compat-strip">
+                        <span style="font-size: 13px; font-weight: 700; color: var(--secondary); display: flex; align-items: center; gap: 6px;">
+                            <i class="fa-solid fa-code-branch"></i> Clinically Compatible Groups:
+                        </span>
+                        <div id="compatPillsContainer" style="display: flex; flex-wrap: wrap; gap: 6px;"></div>
+                    </div>
+                </div>
+            </form>
+        </div>
+
+        <!-- Search Results Section (Shown after search) -->
+        <div id="donorResultsSection" style="display: none; margin-bottom: 30px;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; flex-wrap: wrap; gap: 12px;">
+                <div style="display: flex; align-items: center; gap: 12px;">
+                    <h3 style="font-size: 18px; font-weight: 700; color: var(--secondary); display: flex; align-items: center; gap: 8px;">
+                        <i class="fa-solid fa-users"></i> Compatible Donors Directory
+                    </h3>
+                    <span id="donorResultsCount" class="badge-status badge-success">0 Donors Found</span>
+                </div>
+
+                <!-- View Toggle Buttons: Grid vs Map -->
+                <div class="view-toggle-group">
+                    <button type="button" id="btnToggleGrid" class="view-toggle-btn active">
+                        <i class="fa-solid fa-table-cells-large"></i> Grid View
+                    </button>
+                    <button type="button" id="btnToggleMap" class="view-toggle-btn">
+                        <i class="fa-solid fa-map-location-dot"></i> Map View
+                    </button>
+                </div>
+            </div>
+
+            <!-- Grid Cards Container -->
+            <div id="donorResultsGrid" class="donor-results-grid"></div>
+
+            <!-- Leaflet Interactive Map Container -->
+            <div id="mapContainer">
+                <div id="donorMap"></div>
+            </div>
+        </div>
+
         <div class="content-grid">
 
             <!-- Phase 4: Donor Portal & Profile Management Card -->
@@ -49,19 +172,19 @@
                     <h2 class="card-title">
                         <i class="fa-solid fa-gauge-high"></i> Phase 4: Donor Profile &amp; Medical Questionnaire
                     </h2>
-                    <span id="phase4StatusBadge" class="badge-status badge-pending">Testing</span>
+                    <span id="phase4StatusBadge" class="badge-status badge-pending">Active</span>
                 </div>
 
                 <p style="color: var(--text-secondary); margin-bottom: 20px;">
-                    Registered donors can configure their blood group, component capabilities (Whole Blood / Platelets / Plasma), GPS location coordinates, and confirm mandatory pre-donation health screening criteria.
+                    Registered donors configure their blood group, component capabilities (Whole Blood / Platelets / Plasma), GPS location coordinates, and confirm mandatory pre-donation health screening criteria.
                 </p>
 
                 <div id="donorPortalGuestView" style="padding: 16px; background: #F3F4F6; border-radius: var(--radius-md); margin-bottom: 18px;">
                     <p style="font-weight: 600; color: var(--secondary); margin-bottom: 4px;">
-                        <i class="fa-solid fa-circle-info"></i> How to test Phase 4:
+                        <i class="fa-solid fa-circle-info"></i> Donor Portal:
                     </p>
                     <p style="font-size: 13px; color: var(--text-secondary);">
-                        Log in with a <strong>Donor account</strong> to access the full Donor Portal. If you don't have one, register with the "Donor" role.
+                        To update your donor profile, component preferences, or directory availability, open the Donor Portal.
                     </p>
                 </div>
 
@@ -157,27 +280,6 @@
                 </div>
             </div>
 
-            <!-- Phase 1: Environment & Server Health Check Card -->
-            <div class="card">
-                <div class="card-header">
-                    <h2 class="card-title">
-                        <i class="fa-solid fa-server"></i> Phase 1: Server Health Check
-                    </h2>
-                    <span style="font-size: 13px; color: var(--success); font-weight: 600;">
-                        <i class="fa-solid fa-check"></i> Verified
-                    </span>
-                </div>
-
-                <div class="info-row">
-                    <span class="info-label">Backend API URL</span>
-                    <span class="info-value">http://localhost:5000/api</span>
-                </div>
-                <div class="info-row">
-                    <span class="info-label">Health Route</span>
-                    <span class="info-value">GET /health</span>
-                </div>
-            </div>
-
             <!-- 15-Phase Development Roadmap -->
             <div class="card">
                 <div class="card-header">
@@ -200,16 +302,20 @@
                         <span><strong>Phase 3:</strong> Authentication &amp; Role-Based Access Control (Verified)</span>
                     </li>
                     <li class="checklist-item">
-                        <span class="check-icon check-pending" id="phase4Check">4</span>
-                        <span><strong>Phase 4:</strong> Donor Profile, Component Selection &amp; Medical Questionnaire (Current)</span>
+                        <span class="check-icon check-done"><i class="fa-solid fa-check"></i></span>
+                        <span><strong>Phase 4:</strong> Donor Profile, Component Selection &amp; Medical Questionnaire (Verified)</span>
                     </li>
                     <li class="checklist-item">
-                        <span class="check-icon check-pending">5</span>
-                        <span><strong>Phase 5:</strong> Medical Blood Compatibility Matrix &amp; Smart Matching Engine</span>
+                        <span class="check-icon check-done"><i class="fa-solid fa-check"></i></span>
+                        <span><strong>Phase 5:</strong> Medical Blood Compatibility Matrix &amp; Smart Matching Engine (Verified)</span>
                     </li>
                     <li class="checklist-item">
-                        <span class="check-icon check-pending">6-15</span>
-                        <span>Geolocation, Requests, Cooldown, SOS Broadcast, PDF Certificates, PWA &amp; Admin</span>
+                        <span class="check-icon check-pending" id="phase6Check">6</span>
+                        <span><strong>Phase 6:</strong> Geolocation &amp; Radius Search (Haversine Formula + Map) (Current)</span>
+                    </li>
+                    <li class="checklist-item">
+                        <span class="check-icon check-pending">7-15</span>
+                        <span>Request Creation, Privacy Shield, Live Lifecycle, Cooldown, SOS Broadcast, Certificates &amp; PWA</span>
                     </li>
                 </ul>
             </div>
@@ -224,10 +330,13 @@
         </div>
     </footer>
 
+    <!-- Leaflet.js Interactive Map Script -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <!-- Scripts -->
     <script src="js/config.js"></script>
     <script src="js/api.js"></script>
     <script src="js/auth.js"></script>
+    <script src="js/search.js"></script>
     <script>
         const connectionBadge = document.getElementById('connectionBadge');
         const badgeText = document.getElementById('badgeText');
@@ -252,7 +361,6 @@
         const homeDonorScreening = document.getElementById('homeDonorScreening');
         const btnHomeLoginPrompt = document.getElementById('btnHomeLoginPrompt');
         const phase4StatusBadge = document.getElementById('phase4StatusBadge');
-        const phase4Check = document.getElementById('phase4Check');
 
         // Check Phase 1 API Health
         async function checkServerHealth() {
@@ -318,8 +426,6 @@
                         homeDonorScreening.textContent = "Passed (Eligible)";
                         phase4StatusBadge.className = "badge-status badge-success";
                         phase4StatusBadge.innerHTML = '<i class="fa-solid fa-check"></i> Profile Active';
-                        phase4Check.className = "check-icon check-done";
-                        phase4Check.innerHTML = '<i class="fa-solid fa-check"></i>';
                     } else {
                         homeDonorBloodGroup.textContent = "Not Set";
                         homeDonorAvailability.textContent = "Pending Setup";
