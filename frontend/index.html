@@ -3,12 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
     <title>BloodConnect - Life Saving Donor Platform</title>
     <!-- Font Awesome for Professional Monochromatic Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <!-- Leaflet.js Interactive Map CSS -->
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
-    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/style.css?v=20261110_02">
 </head>
 <body>
 
@@ -136,7 +139,7 @@
 
         <!-- Search Results Section (Shown after search) -->
         <div id="donorResultsSection" style="display: none; margin-bottom: 30px;">
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; flex-wrap: wrap; gap: 12px;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; flex-wrap: wrap; gap: 12px;">
                 <div style="display: flex; align-items: center; gap: 12px;">
                     <h3 style="font-size: 18px; font-weight: 700; color: var(--secondary); display: flex; align-items: center; gap: 8px;">
                         <i class="fa-solid fa-users"></i> Compatible Donors Directory
@@ -144,23 +147,29 @@
                     <span id="donorResultsCount" class="badge-status badge-success">0 Donors Found</span>
                 </div>
 
-                <!-- View Toggle Buttons: Grid vs Map -->
+                <!-- View Toggle Buttons: Split View vs Cards vs Map -->
                 <div class="view-toggle-group">
-                    <button type="button" id="btnToggleGrid" class="view-toggle-btn active">
-                        <i class="fa-solid fa-table-cells-large"></i> Grid View
+                    <button type="button" id="btnToggleBoth" class="view-toggle-btn active">
+                        <i class="fa-solid fa-table-columns"></i> Split View (Both)
+                    </button>
+                    <button type="button" id="btnToggleGrid" class="view-toggle-btn">
+                        <i class="fa-solid fa-table-cells-large"></i> Cards Only
                     </button>
                     <button type="button" id="btnToggleMap" class="view-toggle-btn">
-                        <i class="fa-solid fa-map-location-dot"></i> Map View
+                        <i class="fa-solid fa-map-location-dot"></i> Map Only
                     </button>
                 </div>
             </div>
 
-            <!-- Grid Cards Container -->
-            <div id="donorResultsGrid" class="donor-results-grid"></div>
+            <!-- Results Layout Wrapper: Responsive Split View (Cards on Left, Map on Right) -->
+            <div id="resultsLayoutWrapper" class="results-layout-split">
+                <!-- Donor Cards Column -->
+                <div id="donorResultsGrid" class="donor-results-grid"></div>
 
-            <!-- Leaflet Interactive Map Container -->
-            <div id="mapContainer">
-                <div id="donorMap"></div>
+                <!-- Leaflet Interactive Map Column -->
+                <div id="mapContainer">
+                    <div id="donorMap"></div>
+                </div>
             </div>
         </div>
 
@@ -332,11 +341,11 @@
 
     <!-- Leaflet.js Interactive Map Script -->
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-    <!-- Scripts -->
-    <script src="js/config.js"></script>
-    <script src="js/api.js"></script>
-    <script src="js/auth.js"></script>
-    <script src="js/search.js"></script>
+    <!-- Scripts (with Cache-Busting Version Query) -->
+    <script src="js/config.js?v=20261110_02"></script>
+    <script src="js/api.js?v=20261110_02"></script>
+    <script src="js/auth.js?v=20261110_02"></script>
+    <script src="js/search.js?v=20261110_02"></script>
     <script>
         const connectionBadge = document.getElementById('connectionBadge');
         const badgeText = document.getElementById('badgeText');

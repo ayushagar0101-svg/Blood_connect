@@ -33,15 +33,15 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const donorResultsSection = document.getElementById('donorResultsSection');
     const donorResultsCount = document.getElementById('donorResultsCount');
+    const resultsLayoutWrapper = document.getElementById('resultsLayoutWrapper');
+    const btnToggleBoth = document.getElementById('btnToggleBoth');
     const btnToggleGrid = document.getElementById('btnToggleGrid');
     const btnToggleMap = document.getElementById('btnToggleMap');
     const donorResultsGrid = document.getElementById('donorResultsGrid');
     const mapContainer = document.getElementById('mapContainer');
 
-    // Leaflet Map Instance & Layer Group
+    // Leaflet Map Instance
     let leafletMap = null;
-    let markersLayer = null;
-    let radiusCircleLayer = null;
 
     // 1. GPS Auto-Detect Handler for Requester
     btnUseCurrentGPS.addEventListener('click', () => {
@@ -68,7 +68,7 @@ document.addEventListener('DOMContentLoaded', () => {
             (err) => {
                 btnUseCurrentGPS.disabled = false;
                 btnUseCurrentGPS.innerHTML = '<i class="fa-solid fa-crosshairs"></i> Use My Current GPS';
-                alert(`GPS Detection failed: ${err.message}. You can continue searching by City.`);
+                alert(`GPS Detection note: ${err.message}. You can continue searching by City or Blood Group.`);
             },
             { timeout: 10000, enableHighAccuracy: true }
         );
@@ -107,55 +107,75 @@ document.addEventListener('DOMContentLoaded', () => {
 
     searchBloodGroup.addEventListener('change', updateCompatibilityVisualizer);
 
-    // 3. Leaflet Map Initialization and Plotting
+    // 3. Leaflet Map Initialization and Plotting (Clean Fresh Instance)
+    const donorMarkersMap = new Map();
+
     function renderLeafletMap(donors, userLocation, radiusKm) {
         if (typeof L === 'undefined') {
             console.warn('Leaflet library is not loaded.');
             return;
         }
 
-        // Initialize map if not yet created
-        if (!leafletMap) {
-            leafletMap = L.map('donorMap', {
-                center: [28.6139, 77.2090], // Default center (New Delhi)
-                zoom: 11
-            });
+        const mapElement = document.getElementById('donorMap');
+        if (!mapElement) return;
 
-            // OpenStreetMap tile layer (Clean monochrome friendly)
-            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-                maxZoom: 18,
-                attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-            }).addTo(leafletMap);
-
-            markersLayer = L.layerGroup().addTo(leafletMap);
-        } else {
-            markersLayer.clearLayers();
-            if (radiusCircleLayer) {
-                leafletMap.removeLayer(radiusCircleLayer);
-            }
+        // Clean up previous map instance to prevent stale/blocked tile caching
+        if (leafletMap) {
+            leafletMap.remove();
+            leafletMap = null;
         }
+        donorMarkersMap.clear();
 
+        const defaultCenter = [26.2183, 78.1828]; // Gwalior default
+        leafletMap = L.map('donorMap', {
+            center: defaultCenter,
+            zoom: 12
+        });
+
+        // 1. High-Performance Esri World Street Map Layer (Backed by Enterprise CDN, never blocks localhost)
+        const esriStreetLayer = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}', {
+            maxZoom: 19,
+            attribution: 'Tiles &copy; Esri &mdash; Source: Esri, DeLorme, NAVTEQ, USGS'
+        });
+
+        // 2. High-Performance CartoDB Voyager Layer
+        const cartoVoyagerLayer = L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
+            maxZoom: 19,
+            subdomains: 'abcd',
+            attribution: '&copy; CARTO &copy; OpenStreetMap'
+        });
+
+        // Add default street layer
+        esriStreetLayer.addTo(leafletMap);
+
+        // Add layer switcher control
+        L.control.layers({
+            "Street Map (Fast)": esriStreetLayer,
+            "Voyager Map": cartoVoyagerLayer
+        }, null, { position: 'topright' }).addTo(leafletMap);
+
+        const markersLayer = L.layerGroup().addTo(leafletMap);
         const mapBounds = [];
 
-        // Plot User's Search Location Pin
+        // Plot User's Search Origin Pin
         if (userLocation && userLocation.lat && userLocation.lng) {
             const userLatLng = [userLocation.lat, userLocation.lng];
             mapBounds.push(userLatLng);
 
             const userIcon = L.divIcon({
                 className: 'leaflet-user-marker',
-                html: `<div class="custom-user-pin" title="Your Search Location"><i class="fa-solid fa-crosshairs"></i></div>`,
+                html: `<div class="custom-user-pin" title="Search Origin Location"><i class="fa-solid fa-crosshairs"></i></div>`,
                 iconSize: [32, 32],
                 iconAnchor: [16, 16]
             });
 
             L.marker(userLatLng, { icon: userIcon })
-                .bindPopup(`<strong><i class="fa-solid fa-location-crosshairs"></i> Patient Location</strong><br>Search Origin`)
+                .bindPopup(`<strong><i class="fa-solid fa-location-crosshairs"></i> Search Origin</strong><br>Patient Location`)
                 .addTo(markersLayer);
 
             // Draw Radius Circle
             if (radiusKm && !isNaN(radiusKm)) {
-                radiusCircleLayer = L.circle(userLatLng, {
+                L.circle(userLatLng, {
                     radius: radiusKm * 1000,
                     color: '#C8102E',
                     fillColor: '#FFECEE',
@@ -183,7 +203,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     <div style="font-family: inherit; font-size: 13px; line-height: 1.5;">
                         <strong style="font-size: 14px; color: var(--secondary);"><i class="fa-solid fa-circle-user"></i> ${donor.name}</strong><br>
                         <span style="display: inline-block; padding: 2px 6px; background: #FFECEE; color: #C8102E; border-radius: 4px; font-weight: 700; font-size: 11px; margin: 4px 0;">
-                            ${donor.bloodGroup} • ${donor.matchType}
+                            ${donor.bloodGroup} &bull; ${donor.matchType}
                         </span><br>
                         ${donor.distance_km !== null ? `<i class="fa-solid fa-route"></i> <strong>${donor.distance_km} km away</strong><br>` : ''}
                         <i class="fa-solid fa-location-dot"></i> ${donor.city}<br>
@@ -194,39 +214,67 @@ document.addEventListener('DOMContentLoaded', () => {
                     </div>
                 `;
 
-                L.marker(donorLatLng, { icon: donorIcon })
+                const marker = L.marker(donorLatLng, { icon: donorIcon })
                     .bindPopup(popupContent)
                     .addTo(markersLayer);
+
+                donorMarkersMap.set(donor.id, marker);
             }
         });
 
         // Auto-fit map to show all markers
         if (mapBounds.length > 0) {
-            leafletMap.fitBounds(mapBounds, { padding: [40, 40] });
+            leafletMap.fitBounds(mapBounds, { padding: [50, 50], maxZoom: 14 });
+        } else {
+            leafletMap.setView(defaultCenter, 12);
         }
+
+        // Re-calculate size to prevent blank or distorted tiles
+        setTimeout(() => {
+            if (leafletMap) leafletMap.invalidateSize();
+        }, 100);
+        setTimeout(() => {
+            if (leafletMap) leafletMap.invalidateSize();
+        }, 400);
     }
 
-    // 4. View Switcher: Grid View vs Map View
-    btnToggleGrid.addEventListener('click', () => {
-        btnToggleGrid.classList.add('active');
-        btnToggleMap.classList.remove('active');
-        donorResultsGrid.style.display = 'grid';
-        mapContainer.style.display = 'none';
-    });
+    // 4. View Switcher Logic: Split View (Both Default), Cards Only, Map Only
+    function setViewMode(mode) {
+        if (!resultsLayoutWrapper) return;
 
-    btnToggleMap.addEventListener('click', () => {
-        btnToggleMap.classList.add('active');
-        btnToggleGrid.classList.remove('active');
-        donorResultsGrid.style.display = 'none';
-        mapContainer.style.display = 'block';
+        if (mode === 'both') {
+            btnToggleBoth.classList.add('active');
+            btnToggleGrid.classList.remove('active');
+            btnToggleMap.classList.remove('active');
+            resultsLayoutWrapper.className = 'results-layout-split';
+            mapContainer.style.display = 'block';
+            donorResultsGrid.style.display = 'flex';
+        } else if (mode === 'cards') {
+            btnToggleGrid.classList.add('active');
+            btnToggleBoth.classList.remove('active');
+            btnToggleMap.classList.remove('active');
+            resultsLayoutWrapper.className = 'results-layout-cards-only';
+            mapContainer.style.display = 'none';
+            donorResultsGrid.style.display = 'grid';
+        } else if (mode === 'map') {
+            btnToggleMap.classList.add('active');
+            btnToggleBoth.classList.remove('active');
+            btnToggleGrid.classList.remove('active');
+            resultsLayoutWrapper.className = 'results-layout-map-only';
+            mapContainer.style.display = 'block';
+            donorResultsGrid.style.display = 'none';
+        }
 
-        // Invalidate size ensures tiles render properly when toggled from hidden display
-        if (leafletMap) {
+        if (leafletMap && (mode === 'both' || mode === 'map')) {
             setTimeout(() => {
                 leafletMap.invalidateSize();
             }, 100);
         }
-    });
+    }
+
+    btnToggleBoth?.addEventListener('click', () => setViewMode('both'));
+    btnToggleGrid?.addEventListener('click', () => setViewMode('cards'));
+    btnToggleMap?.addEventListener('click', () => setViewMode('map'));
 
     // 5. Execute Smart Search with Haversine Geolocation
     smartSearchForm.addEventListener('submit', async (e) => {
@@ -245,12 +293,16 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         btnSearchDonors.disabled = true;
-        btnSearchDonors.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> Calculating Distances...';
+        btnSearchDonors.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> Searching Donors...';
         donorResultsSection.style.display = 'block';
+
+        // Set default to show Both Map and Cards
+        setViewMode('both');
+
         donorResultsGrid.innerHTML = `
             <div style="grid-column: 1 / -1; text-align: center; padding: 40px 0; color: var(--text-secondary);">
                 <i class="fa-solid fa-circle-notch fa-spin" style="font-size: 28px; margin-bottom: 12px; display: block; color: var(--primary);"></i>
-                Calculating nearest donors using Haversine Geolocation...
+                Finding compatible donors near you...
             </div>
         `;
 
@@ -266,14 +318,14 @@ document.addEventListener('DOMContentLoaded', () => {
             const result = await api.get(endpoint);
 
             btnSearchDonors.disabled = false;
-            btnSearchDonors.innerHTML = '<i class="fa-solid fa-magnifying-glass"></i> Find Donors';
+            btnSearchDonors.innerHTML = '<i class="fa-solid fa-magnifying-glass"></i> Find Nearest Compatible Donors';
 
             if (result.ok && result.data.success) {
                 const donors = result.data.donors;
                 const total = donors.length;
                 donorResultsCount.textContent = `${total} Compatible Donor${total === 1 ? '' : 's'} Found`;
 
-                // Update & Render Leaflet Map
+                // Render Map
                 const userLoc = (lat && lng) ? { lat: parseFloat(lat), lng: parseFloat(lng) } : null;
                 renderLeafletMap(donors, userLoc, radius ? parseFloat(radius) : 50);
 
@@ -281,9 +333,9 @@ document.addEventListener('DOMContentLoaded', () => {
                     donorResultsGrid.innerHTML = `
                         <div style="grid-column: 1 / -1; text-align: center; padding: 36px 20px; background: #FFFFFF; border: 1px dashed var(--border-color); border-radius: var(--radius-md);">
                             <i class="fa-solid fa-user-slash" style="font-size: 32px; color: var(--text-light); margin-bottom: 12px; display: block;"></i>
-                            <h3 style="font-size: 16px; color: var(--secondary); margin-bottom: 6px;">No Active Donors in this Radius</h3>
+                            <h3 style="font-size: 16px; color: var(--secondary); margin-bottom: 6px;">No Active Donors Found</h3>
                             <p style="font-size: 14px; color: var(--text-secondary); max-width: 500px; margin: 0 auto;">
-                                We checked donors matching <strong>${result.data.compatibleGroups.join(', ')}</strong> ${radius ? `within ${radius} km` : ''}, but none are currently Available. Try widening the radius or searching by city.
+                                We checked donors matching <strong>${result.data.compatibleGroups.join(', ')}</strong>, but none are currently Available.
                             </p>
                         </div>
                     `;
@@ -301,10 +353,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
                     const distanceBadgeHtml = (donor.distance_km !== null && donor.distance_km !== undefined)
                         ? `<div class="distance-badge"><i class="fa-solid fa-route"></i> ${donor.distance_km} km away</div>`
-                        : '';
+                        : `<div class="distance-badge" style="background:#F3F4F6; color:var(--text-secondary);"><i class="fa-solid fa-location-dot"></i> City Match</div>`;
 
                     return `
-                        <div class="donor-card">
+                        <div class="donor-card" data-donor-id="${donor.id}" style="cursor: pointer;" title="Click card to locate on map">
                             <div>
                                 <div class="donor-card-top">
                                     <div>
@@ -353,6 +405,19 @@ document.addEventListener('DOMContentLoaded', () => {
                     `;
                 }).join('');
 
+                // Click donor card to focus & open popup on map
+                document.querySelectorAll('.donor-card').forEach(card => {
+                    card.addEventListener('click', (e) => {
+                        if (e.target.closest('.btn-request-donor')) return;
+                        const donorId = parseInt(card.getAttribute('data-donor-id'));
+                        const marker = donorMarkersMap.get(donorId);
+                        if (marker && leafletMap) {
+                            leafletMap.setView(marker.getLatLng(), 14, { animate: true });
+                            marker.openPopup();
+                        }
+                    });
+                });
+
                 // Attach click handlers to "Request Blood" buttons
                 document.querySelectorAll('.btn-request-donor').forEach(btn => {
                     btn.addEventListener('click', () => {
@@ -379,7 +444,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         } catch (error) {
             btnSearchDonors.disabled = false;
-            btnSearchDonors.innerHTML = '<i class="fa-solid fa-magnifying-glass"></i> Find Donors';
+            btnSearchDonors.innerHTML = '<i class="fa-solid fa-magnifying-glass"></i> Find Nearest Compatible Donors';
             donorResultsGrid.innerHTML = `
                 <div style="grid-column: 1 / -1; color: var(--danger); text-align: center; padding: 20px;">
                     Network error communicating with the search API.

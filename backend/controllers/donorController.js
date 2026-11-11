@@ -281,12 +281,10 @@ const searchDonors = async (req, res) => {
 
         // 2. Build Query
         let distanceSelect = 'NULL AS distance_km';
-        let distanceHaving = '';
-        let params = [compatibleGroups];
+        let params = [];
 
         if (hasCoordinates) {
             // Haversine formula calculation in kilometers (Earth Radius R = 6371 km)
-            // Clamp value between -1.0 and 1.0 to prevent floating-point precision error in ACOS
             distanceSelect = `
                 (6371 * ACOS(
                     LEAST(1.0, GREATEST(-1.0,
@@ -296,8 +294,9 @@ const searchDonors = async (req, res) => {
                     ))
                 )) AS distance_km
             `;
-            // Add userLat and userLng to params for distance calculation
             params = [userLat, userLng, userLat, compatibleGroups];
+        } else {
+            params = [compatibleGroups];
         }
 
         let query = `
@@ -326,10 +325,11 @@ const searchDonors = async (req, res) => {
 
         // 5. Apply Radius Distance Filter if GPS provided
         if (hasCoordinates) {
-            query += ` HAVING (distance_km IS NOT NULL AND distance_km <= ?)`;
+            // Keep donors within radius OR donors in same city without GPS
+            query += ` HAVING (distance_km IS NOT NULL AND distance_km <= ?) OR (distance_km IS NULL)`;
             params.push(maxRadius);
             // Nearest donors first, then exact blood group match
-            query += ` ORDER BY distance_km ASC, (dp.blood_group = ?) DESC`;
+            query += ` ORDER BY (distance_km IS NULL) ASC, distance_km ASC, (dp.blood_group = ?) DESC`;
             params.push(blood_group);
         } else {
             // If no GPS coordinates, sort by Exact Match first, then total successful donations

@@ -494,12 +494,70 @@ i.fa-solid, i.fa-regular, i.fa-brands {
     color: #FFFFFF;
 }
 
-/* Donor Search Results Cards */
-.donor-results-grid {
+/* Donor Search Results Cards & Split Layout */
+.results-layout-split {
+    display: grid;
+    grid-template-columns: 1.1fr 1fr;
+    gap: 20px;
+    align-items: start;
+}
+
+.results-layout-split .donor-results-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.results-layout-cards-only {
+    display: block;
+}
+
+.results-layout-cards-only #mapContainer {
+    display: none !important;
+}
+
+.results-layout-cards-only .donor-results-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(310px, 1fr));
     gap: 18px;
-    margin-top: 20px;
+}
+
+.results-layout-map-only {
+    display: block;
+}
+
+.results-layout-map-only #donorResultsGrid {
+    display: none !important;
+}
+
+.results-layout-map-only #mapContainer {
+    display: block !important;
+    width: 100%;
+}
+
+.results-layout-map-only #donorMap {
+    height: 500px;
+}
+
+@media (max-width: 900px) {
+    .results-layout-split {
+        grid-template-columns: 1fr;
+    }
+    .results-layout-split #mapContainer {
+        order: 2;
+    }
+    .results-layout-split #donorResultsGrid {
+        order: 1;
+    }
+    .results-layout-split #donorMap {
+        height: 320px;
+    }
+}
+
+.donor-results-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
 }
 
 .donor-card {
@@ -601,16 +659,15 @@ i.fa-solid, i.fa-regular, i.fa-brands {
    Leaflet Interactive Map Container & Popup Styling
    ========================================================================== */
 #mapContainer {
-    margin-top: 20px;
     border-radius: var(--radius-md);
     overflow: hidden;
     border: 1px solid var(--border-color);
     box-shadow: var(--shadow-sm);
-    display: none;
+    background: #FAFAFA;
 }
 
 #donorMap {
-    height: 440px;
+    height: 480px;
     width: 100%;
     z-index: 10;
 }

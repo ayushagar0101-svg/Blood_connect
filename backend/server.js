@@ -2,6 +2,7 @@ const express = require('express');
 const cors = require('cors');
 const dotenv = require('dotenv');
 const cookieParser = require('cookie-parser');
+const path = require('path');
 const { testConnection, getDatabaseStatus } = require('./config/db');
 
 // Route Imports
@@ -22,6 +23,15 @@ app.use(cors({
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
+
+// Static Frontend Serving with No-Cache Headers for Development
+app.use(express.static(path.join(__dirname, '../frontend'), {
+    etag: false,
+    maxAge: 0,
+    setHeaders: (res) => {
+        res.set('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate');
+    }
+}));
 
 // Phase 1 Health Check Route
 app.get('/api/health', (req, res) => {
